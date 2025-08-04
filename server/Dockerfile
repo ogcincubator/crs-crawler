@@ -9,4 +9,7 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt \
 
 COPY main.py .
 
-CMD ["python3", "main.py"]
+ENV ROOT_PATH=""
+ENV FORWARDED_ALLOW_IPS="127.0.0.1"
+
+CMD ["bash", "-c", "fastapi run main.py --proxy-headers --port 8000 --root-path \"${ROOT_PATH%/}\""]
