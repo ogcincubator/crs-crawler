@@ -12,4 +12,4 @@ COPY main.py .
 ENV ROOT_PATH=""
 ENV FORWARDED_ALLOW_IPS="127.0.0.1"
 
-CMD ["bash", "-c", "fastapi run main.py --proxy-headers --port 8000 --root-path \"${ROOT_PATH%/}\""]
+CMD ["fastapi", "run", "main.py", "--proxy-headers", "--port", "8080", "--root-path", "${ROOT_PATH}"]
