@@ -19,7 +19,7 @@ python crawl.py https://www.opengis.net/def/crs/
 
 ## Credits
 
-[avillar](https://github.com/avillar) and his assistant.
+[avillar](https://github.com/avillar) and his "assistant".
 
 ### License
 
