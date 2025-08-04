@@ -7,6 +7,7 @@ This scripts crawls all the children of a url and produces a list. It can be use
 Usage:
 
 ```
+pip install -r requirements.txt
 python crawl.py [start_url]
 ```
 
