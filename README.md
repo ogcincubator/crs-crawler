@@ -2,7 +2,7 @@
 
 ## Quick-start
 
-This scripts crawls all the child of a url and produces a list. It can be used to build a list of OGC crs uris.
+This scripts crawls all the children of a url and produces a list. It can be used to build a list of OGC crs uris.
 
 Usage:
 
