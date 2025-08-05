@@ -11,14 +11,12 @@ from whoosh.fields import Schema, ID, TEXT, NGRAM
 from whoosh.index import create_in, FileIndex
 from whoosh.qparser import QueryParser
 import requests
-from whoosh.query import Regex, Prefix, Or
 
 SOURCE = os.environ.get("CRS_SOURCE", 'crs-list.txt')
 
 
 def build_search_index():
     index_dir = tempfile.mkdtemp()
-    #schema = Schema(uri=ID(stored=True))
     schema = Schema(uri=NGRAM(minsize=2, maxsize=6, stored=True))
     idx = create_in(index_dir, schema)
     writer = idx.writer()
@@ -57,12 +55,7 @@ app = FastAPI(lifespan=app_lifespan)
 def search(q: str = Query(..., min_length=1), idx: FileIndex = Depends(get_search_index)):
     q = re.sub(r'[^A-Za-z0-9_/.,-]', '', q)
     results = []
-    print('START!!', q, file=sys.stderr, flush=True)
     with idx.searcher(weighting=scoring.Frequency) as searcher:
-        # Search for substring match
-        #regex_query = Regex("uri", f".*{re.escape(q)}.*")
-        #prefix_query = Prefix("uri", q)
-        #query = Or([prefix_query, regex_query])
         query = QueryParser("uri", idx.schema).parse(q)
         raw_results = searcher.search(query, limit=20)
 
@@ -78,7 +71,6 @@ def search(q: str = Query(..., min_length=1), idx: FileIndex = Depends(get_searc
 
         # Sort by boosted score
         results.sort(key=lambda x: -x["score"])
-    print('END!!', q, file=sys.stderr, flush=True)
 
     return {"query": q, "results": results}
 
