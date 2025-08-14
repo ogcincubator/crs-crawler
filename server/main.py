@@ -12,6 +12,8 @@ from whoosh.index import create_in, FileIndex
 from whoosh.qparser import QueryParser
 import requests
 
+LIMIT = 20 # Default limit
+
 SOURCE = os.environ.get("CRS_SOURCE", 'crs-list.txt')
 
 
@@ -52,12 +54,16 @@ app = FastAPI(lifespan=app_lifespan)
 
 
 @app.get('/search')
-def search(q: str = Query(..., min_length=1), idx: FileIndex = Depends(get_search_index)):
+def search(
+    q: str = Query(..., min_length=1),
+    limit: int = Query(LIMIT, ge=1),
+    idx: FileIndex = Depends(get_search_index)
+):
     q = re.sub(r'[^A-Za-z0-9_/.,-]', '', q)
     results = []
     with idx.searcher(weighting=scoring.Frequency) as searcher:
         query = QueryParser("uri", idx.schema).parse(q)
-        raw_results = searcher.search(query, limit=20)
+        raw_results = searcher.search(query, limit=limit)
 
         # Prioritize prefix matches
         for hit in raw_results:
